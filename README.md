@@ -24,16 +24,9 @@
 ### User Interface  
 ![Submit Complaint](docs/preview/index1.png)
 ![Submit Complaint](docs/preview/index2.png)
-![Track Complaint](docs/preview/track.png)  
 
 ### Admin Dashboard  
 ![Admin Panel](docs/preview/admin.png)  
-
----
-
-## 🏗 Architecture Diagram  
-
-![System Architecture](docs/preview/architecture.png)  
 
 ---
 
@@ -127,23 +120,22 @@ smart_complaint_box/
 
 2. **Create a virtual environment & install dependencies**
   ```bash
-    python -m venv venv
-    source venv/bin/activate   # Linux/Mac
-    venv\Scripts\activate      # Windows
+python -m venv venv
+source venv/bin/activate   # Linux/Mac
+venv\Scripts\activate      # Windows
 
-    pip install -r requirements.txt
+pip install -r requirements.txt
   ```
 
 3. **Configure environment variables**
   ```bash
-    cp .env.example .env
-    # Fill in required values (e.g., email credentials, DB settings)
-```
+cp .env.example .env
+# Fill in required values (e.g., email credentials, DB settings)
+   ```
 4. **Run the application**
-
-```bash
-    python main.py
-```
+   ```bash
+   python main.py
+   ```
 ---
 
 ## 🔮 Future Improvements
