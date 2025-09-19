@@ -22,11 +22,12 @@
 ## 📸 Screenshots  
 
 ### User Interface  
-![Submit Complaint](docs/preview/index.jpg)  
-![Track Complaint](docs/preview/track.jpg)  
+![Submit Complaint](docs/preview/index1.png)
+![Submit Complaint](docs/preview/index2.png)
+![Track Complaint](docs/preview/track.png)  
 
 ### Admin Dashboard  
-![Admin Panel](docs/preview/admin.jpg)  
+![Admin Panel](docs/preview/admin.png)  
 
 ---
 
