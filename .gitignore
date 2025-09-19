@@ -6,14 +6,13 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.pkl
 
 # Virtual environment
 venv/
 .venv/
 
 # Database
-database/*.db
+# database/*.db
 
 # Logs
 *.log
@@ -21,3 +20,6 @@ database/*.db
 # OS files
 .DS_Store
 Thumbs.db
+
+# Trained models
+# *.pkl
