@@ -1,0 +1,22 @@
+# To install the required packages, run this command in your terminal:
+# pip install -r requirements.txt
+
+# Web framework
+flask>=3.0.0
+flask_sqlalchemy>=3.1.1
+
+# Database connectors
+# SQLite works out of the box (no extra install needed)
+# MySQL support (optional)
+mysql-connector-python>=9.0.0
+
+# Environment variables
+python-dotenv>=1.0.1
+
+# Machine learning
+scikit-learn>=1.5.0
+pandas>=2.2.0
+joblib>=1.4.2
+
+# Development & testing
+pytest>=8.0.0

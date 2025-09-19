@@ -1,0 +1,80 @@
+{
+    "Road": {
+        "Potholes": {
+            "level1": "public.works.dept@example.com",
+            "level2": "public.works.head@example.com"
+        },
+        "TrafficSignal": {
+            "level1": "traffic.management.dept@example.com",
+            "level2": "traffic.management.head@example.com"
+        },
+        "Footpath": {
+            "level1": "urban.development.dept@example.com",
+            "level2": "urban.development.head@example.com"
+        },
+        "default": {
+            "level1": "road.general@example.com",
+            "level2": "road.general.head@example.com"
+        }
+    },
+    "Electricity": {
+        "PowerCut": {
+            "level1": "electricity.distribution.dept@example.com",
+            "level2": "electricity.distribution.head@example.com"
+        },
+        "Wiring": {
+            "level1": "electrical.safety.dept@example.com",
+            "level2": "electrical.safety.head@example.com"
+        },
+        "Streetlight": {
+            "level1": "municipal.lighting.dept@example.com",
+            "level2": "municipal.lighting.head@example.com"
+        },
+        "default": {
+            "level1": "electricity.general@example.com",
+            "level2": "electricity.general.head@example.com"
+        }
+    },
+    "Water": {
+        "Leakage": {
+            "level1": "water.supply.dept@example.com",
+            "level2": "water.supply.head@example.com"
+        },
+        "Quality": {
+            "level1": "water.quality.dept@example.com",
+            "level2": "water.quality.head@example.com"
+        },
+        "Waterlogging": {
+            "level1": "drainage.dept@example.com",
+            "level2": "drainage.head@example.com"
+        },
+        "default": {
+            "level1": "water.general@example.com",
+            "level2": "water.general.head@example.com"
+        }
+    },
+    "Sanitation": {
+        "Garbage": {
+            "level1": "municipal.sanitation.dept@example.com",
+            "level2": "municipal.sanitation.head@example.com"
+        },
+        "PublicToilet": {
+            "level1": "public.health.dept@example.com",
+            "level2": "public.health.head@example.com"
+        },
+        "Sewage": {
+            "level1": "drainage.sewerage.dept@example.com",
+            "level2": "drainage.sewerage.head@example.com"
+        },
+        "default": {
+            "level1": "sanitation.general@example.com",
+            "level2": "sanitation.general.head@example.com"
+        }
+    },
+    "default": {
+        "default": {
+            "level1": "general.inquiries@example.com",
+            "level2": "general.supervisors@example.com"
+        }
+    }
+}

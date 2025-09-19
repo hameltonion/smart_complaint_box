@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Complaint Box</title>
+    <style>
+        body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 20px; line-height: 1.6; }
+        textarea { width: 100%; height: 140px; margin-bottom: 10px; padding: 10px; font-size: 16px; box-sizing: border-box; }
+        button { padding: 12px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 8px; white-space: pre-wrap; word-wrap: break-word; font-family: monospace; }
+        .top-links { margin-bottom: 18px; }
+        .result-box, .confirmation-box { margin-top: 18px; display: none; }
+        #predictBtn { background-color: #007bff; color: white; }
+        #submitComplaintBtn { background-color: #28a745; color: white; }
+        .alert { padding: 10px; border-radius: 5px; font-weight: bold; margin-bottom: 10px; display: none; }
+        .alert.error { background-color: #f8d7da; color: #721c24; }
+        .alert.success { background-color: #d4edda; color: #155724; }
+        #final-details { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="top-links">
+        <a href="/">Submit a Complaint</a> | <a href="/track">Track a Complaint</a> | <a href="/admin">Admin</a>
+    </div>
+
+    <h1>Submit a Complaint</h1>
+    <p>Describe your issue below. The system will automatically analyze it and route it to the appropriate department.</p>
+
+    <div id="statusMessage" class="alert"></div>
+
+    <form id="complaintForm">
+        <textarea id="complaintText" placeholder="e.g., 'The main road in my area has many potholes.'" required></textarea>
+        <button type="submit" id="predictBtn">Save & Next</button>
+    </form>
+
+    <div id="predictionResult" class="result-box">
+        <h3>System Analysis</h3>
+        <p>The system classified your complaint as follows:</p>
+        <pre id="predictionOutput"></pre>
+        <button id="submitComplaintBtn">Confirm & Submit</button>
+    </div>
+
+    <div id="confirmationSection" class="confirmation-box">
+        <h3>Complaint Submitted Successfully</h3>
+        <p>Your complaint has been recorded and routed. You can track its status using the Complaint ID below.</p>
+        <pre id="finalDetailsOutput"></pre>
+        <button onclick="window.location.href='/track?id=' + window.complaintId">Track My Complaint</button>
+    </div>
+    
+    <script>
+    const complaintForm = document.getElementById('complaintForm');
+    const complaintTextarea = document.getElementById('complaintText');
+    const predictBtn = document.getElementById('predictBtn');
+    const predictionResultBox = document.getElementById('predictionResult');
+    const predictionOutput = document.getElementById('predictionOutput');
+    const submitComplaintBtn = document.getElementById('submitComplaintBtn');
+    const confirmationSection = document.getElementById('confirmationSection');
+    const finalDetailsOutput = document.getElementById('finalDetailsOutput');
+    const statusMessage = document.getElementById('statusMessage');
+
+    let predictedData = null;
+    window.complaintId = null;
+
+    // Step 1: Handle prediction on initial form submission
+    complaintForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const complaintText = complaintTextarea.value;
+        showStatusMessage("Analyzing complaint...", "success");
+        predictBtn.disabled = true;
+        predictionResultBox.style.display = 'none';
+
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ complaint_text: complaintText }),
+            });
+            predictedData = await response.json();
+
+            if (response.ok) {
+                let output = `Assigned Department : ${predictedData.assigned_to}\n`;
+                output += `Estimated Resolution : ${predictedData.eta_message}\n`;
+                output += `Escalation Contact  : ${predictedData.escalation_email || 'Not available'}\n`;
+                predictionOutput.textContent = output;
+                predictionResultBox.style.display = 'block';
+                showStatusMessage("Analysis complete. Please confirm to submit.", "success");
+            } else {
+                showStatusMessage(`Error: ${predictedData.error}`, "error");
+            }
+        } catch (err) {
+            showStatusMessage(`An error occurred: ${err.message}`, "error");
+        } finally {
+            predictBtn.disabled = false;
+        }
+    });
+
+    // Step 2: Handle final submission
+    submitComplaintBtn.addEventListener('click', async () => {
+        if (!predictedData) return;
+
+        showStatusMessage("Submitting complaint...", "success");
+        submitComplaintBtn.disabled = true;
+
+        try {
+            const response = await fetch('/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    complaint_text: complaintTextarea.value,
+                    category: predictedData.category,
+                    subcategory: predictedData.subcategory,
+                    urgency: predictedData.urgency,
+                    assigned_to: predictedData.assigned_to
+                }),
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                window.complaintId = result.complaint_id;
+
+                let output = `Complaint ID            : ${result.complaint_id}\n`;
+                output += `Submitted On            : ${new Date().toLocaleString()}\n\n`;
+                output += `Current Status          : Pending\n`;
+                output += `Assigned Department     : ${predictedData.assigned_to}\n\n`;
+                output += `Resolution ETA          : ${predictedData.eta_message}\n`;
+                output += `If unresolved by then, it will be escalated to: ${predictedData.escalation_email}\n`;
+                
+                finalDetailsOutput.textContent = output;
+                predictionResultBox.style.display = 'none';
+                confirmationSection.style.display = 'block';
+                showStatusMessage("Complaint submitted successfully!", "success");
+            } else {
+                showStatusMessage(`Error: ${result.error}`, "error");
+            }
+        } catch (err) {
+            showStatusMessage(`An error occurred: ${err.message}`, "error");
+        } finally {
+            submitComplaintBtn.disabled = false;
+        }
+    });
+
+    function showStatusMessage(message, type) {
+        statusMessage.textContent = message;
+        statusMessage.className = `alert ${type}`;
+        statusMessage.style.display = 'block';
+    }
+    </script>
+</body>
+</html>

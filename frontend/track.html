@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Complaint</title>
+    <style>
+        body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 20px; line-height: 1.6; }
+        .top-links { margin-bottom: 20px; }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .details-container {
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none; /* hidden until user tracks */
+        }
+        pre { white-space: pre-wrap; word-wrap: break-word; font-family: monospace; }
+        .log-entry { margin-bottom: 15px; padding: 10px; border-left: 3px solid #007bff; background-color: #e9ecef; }
+        .log-status { font-weight: bold; }
+        .log-date { font-size: 0.9em; color: #666; }
+        .alert { padding: 10px; border-radius: 5px; font-weight: bold; margin-bottom: 10px; display: none; }
+        .alert.error { background-color: #f8d7da; color: #721c24; }
+        .alert.success { background-color: #d4edda; color: #155724; }
+        .copy-btn { margin-top: 10px; padding: 6px 12px; font-size: 14px; background-color: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="top-links">
+        <a href="/">Submit a Complaint</a> | <a href="/track">Track a Complaint</a> | <a href="/admin">Admin</a>
+    </div>
+    
+    <h1>Track Your Complaint</h1>
+
+    <div id="statusMessage" class="alert"></div>
+
+    <div class="form-container">
+        <input type="text" id="complaint_id" placeholder="Enter Complaint ID" autofocus />
+        <button onclick="get_status_details()">Track</button>
+    </div>
+
+    <div id="detailsSection" class="details-container">
+        <h3>Complaint Details</h3>
+        <pre id="details"></pre>
+        <button id="copyBtn" class="copy-btn">Copy Complaint ID</button>
+        <h3>Status History</h3>
+        <div id="logs-list"></div>
+    </div>
+
+    <script>
+        const statusMessage = document.getElementById('statusMessage');
+        const detailsSection = document.getElementById('detailsSection');
+        const detailsElement = document.getElementById('details');
+        const logsDiv = document.getElementById('logs-list');
+        const copyBtn = document.getElementById('copyBtn');
+
+        function showStatusMessage(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `alert ${type}`;
+            statusMessage.style.display = 'block';
+        }
+
+        async function get_status_details() {
+            const complaintId = document.getElementById('complaint_id').value.trim();
+
+            if (!complaintId) {
+                showStatusMessage("Please enter a Complaint ID.", "error");
+                return;
+            }
+
+            logsDiv.innerHTML = '';
+            detailsElement.textContent = 'Loading...';
+            detailsSection.style.display = 'block';
+            showStatusMessage("Fetching complaint details...", "success");
+
+            try {
+                const response = await fetch(`/get_status/${complaintId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    let details = `Complaint ID            : ${data.complaint_id}\n`;
+                    details += `Submitted On            : ${new Date(data.submitted_at).toLocaleString()}\n\n`;
+                    details += `Current Status          : ${data.status}\n`;
+                    details += `Assigned Department     : ${data.assigned_to}\n\n`;
+                    details += `Urgency                 : ${data.urgency}\n`;
+                    details += `Complaint               : ${data.complaint_text}\n\n`;
+                    details += `Expected Resolution     : ${data.eta_message}\n`;
+                    details += `If unresolved by then, it will be escalated to: ${data.escalation_email}\n`;
+
+                    detailsElement.textContent = details;
+
+                    copyBtn.onclick = () => {
+                        navigator.clipboard.writeText(data.complaint_id).then(() => {
+                            showStatusMessage("Complaint ID copied to clipboard!", "success");
+                        }).catch(() => {
+                            showStatusMessage("Failed to copy Complaint ID.", "error");
+                        });
+                    };
+
+                    logsDiv.innerHTML = '';
+                    if (data.logs && data.logs.length > 0) {
+                        data.logs.forEach(log => {
+                            const logEntry = document.createElement('pre');
+                            logEntry.className = 'log-entry';
+                            logEntry.textContent =
+                                `Status   : ${log.status}\n` +
+                                `Assigned : ${log.assigned_to}\n` +
+                                `Time     : ${new Date(log.timestamp).toLocaleString()}`;
+                            logsDiv.appendChild(logEntry);
+                        });
+                    } else {
+                        const noLogs = document.createElement('p');
+                        noLogs.textContent = "No status history available.";
+                        logsDiv.appendChild(noLogs);
+                    }
+
+                    showStatusMessage("Complaint details loaded successfully.", "success");
+
+                } else {
+                    detailsElement.textContent = '';
+                    logsDiv.innerHTML = '';
+                    showStatusMessage(`Error: ${data.error}`, "error");
+                }
+            } catch (err) {
+                detailsElement.textContent = '';
+                logsDiv.innerHTML = '';
+                showStatusMessage(`An error occurred: ${err.message}`, "error");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (id) {
+                document.getElementById('complaint_id').value = id;
+                get_status_details();
+            }
+        });
+    </script>
+</body>
+</html>
