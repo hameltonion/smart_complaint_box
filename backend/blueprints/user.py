@@ -72,8 +72,13 @@ def predict():
         return jsonify({"error": "Prediction models not loaded. Please train first."}), 500
 
 
+from backend.relay import relay_email, tag_subject
+
 @user_bp.route("/submit", methods=["POST"])
 def submit():
+    import uuid
+    from backend.relay import relay_email, tag_subject
+
     data = request.json
     complaint_text = data.get("complaint_text")
     urgency = data.get("urgency")
@@ -85,26 +90,59 @@ def submit():
         return jsonify({"error": "Missing required data"}), 400
 
     complaint_id = str(uuid.uuid4()).split("-")[0].upper()
+
     try:
+        # --- Save complaint ---
         new_complaint = save_complaint(
             complaint_id, complaint_text, category, subcategory, urgency, assigned_to
         )
 
-        return jsonify(
-            {
-                "success": True,
-                "complaint_id": new_complaint.complaint_id,
-                "message": "Complaint submitted successfully!",
-                "submitted_at": to_ist(new_complaint.created_at),
-                "status": new_complaint.status,
-                "category": new_complaint.category,
-                "subcategory": new_complaint.subcategory,
-                "urgency": new_complaint.urgency,
-                "assigned_to": new_complaint.assigned_to,
-                "eta_message": calculate_eta_message(new_complaint.urgency),
-                "escalation_email": get_level2_department(new_complaint.category, new_complaint.subcategory),
-            }
-        ), 200
+        # --- Email setup ---
+        from backend.email_templates import build_complaint_email
+        from backend.email_sender import get_email_sender
+        from backend.router import get_level2_department, get_eta_message
+
+        email_sender = get_email_sender()
+        eta_message = get_eta_message(new_complaint.urgency)
+
+        # Keep real routing email for display and database
+        display_email = new_complaint.assigned_to  
+
+        # Relay only for actual sending (demo redirect)
+        to_email = relay_email(display_email)
+
+        # --- Build email content ---
+        subject, body = build_complaint_email({
+            "complaint_id": new_complaint.complaint_id,
+            "category": new_complaint.category,
+            "subcategory": new_complaint.subcategory,
+            "urgency": new_complaint.urgency,
+            "user_input": complaint_text,
+            "assigned_to": display_email,
+            "eta_message": eta_message,
+        })
+
+        # Add "[DEMO]" tag in subject if demo mode is active
+        subject = tag_subject(subject)
+
+        # --- Send email ---
+        email_sender.send_email(subject, body, to_email)
+
+        # --- Return response to frontend ---
+        return jsonify({
+            "success": True,
+            "complaint_id": new_complaint.complaint_id,
+            "message": "Complaint submitted successfully!",
+            "submitted_at": to_ist(new_complaint.created_at),
+            "status": new_complaint.status,
+            "category": new_complaint.category,
+            "subcategory": new_complaint.subcategory,
+            "urgency": new_complaint.urgency,
+            "assigned_to": display_email,
+            "eta_message": eta_message,
+            "escalation_email": get_level2_department(new_complaint.category, new_complaint.subcategory),
+        }), 200
+
     except Exception as e:
         logger.exception("Complaint submission failed.")
         db.session.rollback()
