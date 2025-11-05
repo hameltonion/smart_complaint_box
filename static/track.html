@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arzi | Track Complaint</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo-area">
+      <img src="logo/Arzi_logo.png" alt="Arzi Logo">
+      <h1>Arzi</h1>
+    </div>
+    <nav>
+      <a href="/">Submit</a>
+      <a href="/track">Track</a>
+      <a href="/admin">Admin</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Track Your Complaint</h2>
+    <div id="statusMessage" class="alert"></div>
+
+    <input type="text" id="complaint_id" placeholder="Enter Complaint ID" autofocus>
+    <button onclick="get_status_details()">Track</button>
+
+    <div id="detailsSection" class="details-container" style="display:none;">
+      <h3>Complaint Details</h3>
+      <pre id="details"></pre>
+      <button id="copyBtn" class="copy-btn">Copy Complaint ID</button>
+      <h3>Status History</h3>
+      <div id="logs-list"></div>
+    </div>
+  </div>
+
+  <script src="track.js"></script>
+</body>
+</html>

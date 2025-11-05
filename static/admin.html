@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arzi | Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo-area">
+      <img src="logo/Arzi_logo.png" alt="Arzi Logo">
+      <h1>Arzi</h1>
+    </div>
+    <nav>
+      <a href="/">Submit</a>
+      <a href="/track">Track</a>
+      <a href="/admin">Admin</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Admin Panel</h2>
+    <p>View, update, and manage complaints securely.</p>
+
+    <div id="auth-section">
+      <h3>Admin Access</h3>
+      <div id="auth-message" class="alert"></div>
+      <input type="password" id="auth-key" placeholder="Enter Admin Key">
+      <button id="verifyBtn">Verify</button>
+    </div>
+
+    <div id="admin-panel-content" style="display:none;">
+      <div class="alert" id="status-message"></div>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Submitted</th><th>Complaint</th>
+            <th>Status</th><th>Assigned To</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="complaints-table"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

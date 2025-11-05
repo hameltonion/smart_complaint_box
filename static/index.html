@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arzi | Smart Complaint Box</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo-area">
+      <img src="logo/Arzi_logo.png" alt="Arzi Logo">
+      <h1>Arzi</h1>
+    </div>
+    <nav>
+      <a href="/">Submit</a>
+      <a href="/track">Track</a>
+      <a href="/admin">Admin</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Submit a Complaint</h2>
+    <p>Describe your issue below. The system will analyze it and route it to the right department.</p>
+
+    <div id="statusMessage" class="alert"></div>
+
+    <form id="complaintForm">
+      <textarea id="complaintText" placeholder="e.g., 'The streetlight in my area isn’t working.'" required></textarea>
+      <button type="submit" id="predictBtn">Save & Next</button>
+    </form>
+
+    <div id="predictionResult" class="result-box" style="display:none;">
+      <h3>System Analysis</h3>
+      <pre id="predictionOutput"></pre>
+      <button id="submitComplaintBtn">Confirm & Submit</button>
+    </div>
+
+    <div id="confirmationSection" class="confirmation-box" style="display:none;">
+      <h3>Complaint Submitted Successfully</h3>
+      <pre id="finalDetailsOutput"></pre>
+      <button onclick="window.location.href='/track?id=' + window.complaintId">Track My Complaint</button>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
