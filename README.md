@@ -1,150 +1,159 @@
-# Smart Complaint Box 📨  
-*A machine learning powered complaint management system for smart routing and tracking*  
+<p align="center">
+  <img src="static/logo/Arzi_logo.png" alt="Arzi Logo"
+       width="180" height="180"
+       style="border-radius: 25%; box-shadow: 0 0 10px rgba(0,0,0,0.15);" />
+</p>
+<h1 align="center">🏛️ Arzi — Smart Complaint Management System</h1>
+<p align="center"><em>“Where Every Pigeon Carries a Promise”</em></p>
 
-![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)  
-![Flask](https://img.shields.io/badge/flask-2.x-lightgrey.svg)  
-![SQLite](https://img.shields.io/badge/database-SQLite-green.svg)  
-![License](https://img.shields.io/badge/license-MIT-orange.svg)  
-
----
-
-## 🚀 Features  
-- 📝 Submit complaints via a simple text form  
-- 🤖 **ML-powered classification** (Category, Subcategory, Urgency)  
-- 📧 Automatic routing to departments with escalation support  
-- 🔍 Track complaints by unique ID  
-- 📊 **Admin dashboard** with key-based access  
-- 🗄 Database-backed complaint history & status logs  
-- 🧩 Modular architecture (Backend, Frontend, ML Models, Configs)  
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.9+-blue.svg" />
+  <img src="https://img.shields.io/badge/Flask-Backend-green.svg" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  <img src="https://img.shields.io/badge/Status-Active-success.svg" />
+</p>
 
 ---
 
-## 📸 Screenshots  
+## ⚙️ Features
 
-### User Interface  
-![Submit Complaint](docs/preview/index1.png)
-![Submit Complaint](docs/preview/index2.png)
-
-### Admin Dashboard  
-![Admin Panel](docs/preview/admin.png)  
+- 🧠 **AI-based Classification:** Automatically categorizes complaints and determines urgency.  
+- 📨 **Smart Routing:** Directs complaints to the right department or escalation authority.  
+- 💻 **Modern Responsive UI:** Clean, mobile-friendly design inspired by the Arzi brand.  
+- 🔍 **Tracking System:** Allows users to monitor complaint status with timestamps and logs.  
+- 🧑‍💼 **Admin Dashboard:** Secure key-based access for authorized staff to view and update complaints.  
+- 📈 **Transparent History:** Maintains a clear timeline of every complaint’s progress.  
 
 ---
 
-## 📂 Project Structure 
+### 🏠 **Complaint Submission (Index Page)**
+<p align="center">
+  <img src="docs/preview/index.png" alt="Arzi Complaint Submission Page"
+       width="800"
+       style="border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" />
+</p>
+
+### 🔍 **Complaint Tracking Page**
+<p align="center">
+  <img src="docs/preview/track.png" alt="Arzi Track Complaint Page"
+       width="800"
+       style="border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" />
+</p>
+
+### 🧑‍💼 **Admin Dashboard**
+<p align="center">
+  <img src="docs/preview/admin.png" alt="Arzi Admin Dashboard"
+       width="800"
+       style="border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" />
+</p>
+
+### ✉️ **MailTrap Integration (Notification Email Preview)**
+<p align="center">
+  <img src="docs/preview/demo.png" alt="Arzi Mail Notification Preview"
+       width="800"
+       style="border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);" />
+</p>
+
+---
+
+## 💻 Tech Stack / Technologies Used
+
+Layer                | Technologies
+---------------------|------------------------------------------------------------
+Frontend             | HTML, CSS, JavaScript for user and admin interfaces
+Backend Framework    | Flask (Python)
+Machine Learning     | Scikit-learn, Pandas, Joblib
+ML Models            | TF-IDF + Multinomial Naïve Bayes pipelines
+Database             | SQLite (local) / PostgreSQL (production-ready)
+Email System         | SMTP integration via Gmail or Mailtrap sandbox
+Configuration        | dotenv for secure environment variable handling
+Hosting              | Render / Local testing environment
+
+---
+
+## 🧱 Project Structure
+
+```bash
+arzi/
+├── main.py                         # Entry point of the Flask app
+│
+├── backend/                        # Backend logic and blueprints
+│   ├── __init__.py
+│   ├── blueprints/
+│   │   ├── user.py                 # User-side routes (submit, track)
+│   │   └── admin.py                # Admin routes (verify, update, delete)
+│   ├── classifier.py               # Complaint text classification
+│   ├── router.py                   # Department routing logic
+│   ├── storage.py                  # Complaint CRUD and DB operations
+│   ├── email_sender.py             # Email and escalation notifications
+│   ├── email_templates.py          # Email format templates
+│   └── relay.py                    # Email relay and subject tagging
+│
+├── database/
+│   ├── models.py                   # SQLAlchemy ORM models
+│   └── __init__.py
+│
+├── ml_models/
+│   ├── trainall.py                 # Model training script
+│   └── trained_data/               # Serialized trained ML models (.pkl)
+│       ├── category_model.pkl
+│       ├── urgency_model.pkl
+│       └── subcategory_models/
+│
+├── static/                         # Frontend files
+│   ├── index.html                  # Complaint submission page
+│   ├── track.html                  # Track status page
+│   ├── admin.html                  # Admin dashboard
+│   ├── style.css                   # Unified modern styling
+│   ├── index.js                    # Client-side logic
+│   ├── track.js
+│   ├── admin.js
+│   └── logo/
+│       └── Arzi_logo.png           # Arzi brand logo
+│
+├── paths.py                        # Helper for path configuration
+├── requirements.txt                # Python dependencies
+├── .gitignore                      # Ignored build and cache files
+└── README.md                       # Documentation
 ```
-smart_complaint_box/
-│
-├── backend/ # Backend logic
-│ ├── blueprints/ # Flask Blueprints
-│ │ ├── admin.py # Admin routes (dashboard, keys)
-│ │ └── user.py # User routes (submit, track)
-│ ├── classifier.py # Loads ML models, runs predictions
-│ ├── email_sender.py # Sends complaint emails
-│ ├── router.py # Complaint → department mapping
-│ └── storage.py # Database interactions (CRUD)
-│
-├── config/ # Config files
-│ └── routing.json # Category + Subcategory → Department mapping
-│
-├── database/ # Database integration
-│ ├── models.py # SQLAlchemy models (Complaint, StatusLog)
-│ ├── schema.sql # DB schema (tables + fields)
-│ └── smart_complaint_box.db # Local SQLite DB (ignored in Git)
-│
-├── docs/ # Documentation
-│ ├── project_tree.txt # Project structure reference
-│ └── preview/ # Screenshots & diagrams for README
-│ ├── index.jpg
-│ ├── track.jpg
-│ ├── admin.jpg
-│ └── architecture.png
-│
-├── frontend/ # User & Admin UI
-│ ├── index.html # Complaint submission form
-│ ├── track.html # Complaint tracking page
-│ └── admin.html # Admin dashboard
-│
-├── ml_models/ # ML training + models
-│ ├── dataset/complaints.csv # Training dataset
-│ ├── trained_data/ # Saved models
-│ │ ├── category_model.pkl
-│ │ ├── urgency_model.pkl
-│ │ └── subcategory_models/ # Per-category models
-│ │ ├── subcategory_water.pkl
-│ │ ├── subcategory_electricity.pkl
-│ │ ├── subcategory_sanitation.pkl
-│ │ └── subcategory_road.pkl
-│ └── trainall.py # Script to train/retrain models
-│
-├── main.py # Application entrypoint
-├── paths.py # Centralized path configs
-├── requirements.txt # Python dependencies
-└── README.md # Project documentation
-```
+---
 
+## 🧩 Database Schema
+
+### **Complaint Table**
+
+| Column        | Type         | Description |
+|----------------|--------------|-------------|
+| `id`           | Integer (PK) | Unique complaint ID |
+| `complaint_id` | String       | Public complaint identifier (UUID short) |
+| `user_input`   | Text         | Complaint description |
+| `category`     | String       | Primary complaint category |
+| `subcategory`  | String       | Subcategory under department |
+| `urgency`      | String       | Low / Medium / High |
+| `assigned_to`  | String       | Department or email handling the complaint |
+| `status`       | String       | Current state (Pending / In Progress / Resolved) |
+| `created_at`   | DateTime     | Time complaint was submitted |
+| `updated_at`   | DateTime     | Last updated timestamp |
 
 ---
 
-## 🗄 Database Schema  
+### **Status Logs Table**
 
-### `Complaint`  
-| Field        | Type      | Description                                      |
-|--------------|-----------|--------------------------------------------------|
-| complaint_id | String    | Unique ID for each complaint                     |
-| user_input   | Text      | Original complaint text                          |
-| category     | String    | Predicted category (Water, Road, etc.)           |
-| subcategory  | String    | Predicted subcategory (Leakage, Potholes, etc.)  |
-| urgency      | String    | Predicted urgency (High, Medium, Low)            |
-| status       | String    | Complaint status (Pending/Resolved)              |
-| assigned_to  | String    | Department email assigned                        |
-| created_at   | DateTime  | Timestamp when complaint was created             |
-| updated_at   | DateTime  | Last update timestamp                            |
-
-### `StatusLog`  
-| Field        | Type      | Description                        |
-|--------------|-----------|------------------------------------|
-| id           | Integer   | Auto-increment primary key         |
-| complaint_id | String    | Complaint ID (foreign key)         |
-| status       | String    | Status at that moment              |
-| assigned_to  | String    | Handler or department email        |
-| timestamp    | DateTime  | When the change was logged         |
+| Column        | Type         | Description |
+|----------------|--------------|-------------|
+| `id`           | Integer (PK) | Log entry ID |
+| `complaint_id` | String (FK)  | Associated complaint ID |
+| `status`       | String       | Status update (e.g., “Forwarded”, “Resolved”) |
+| `assigned_to`  | String       | Who handled the update |
+| `timestamp`    | DateTime     | When the update occurred |
 
 ---
 
-## ⚙️ Setup & Installation  
-
-1. **Clone the repository**  
-   ```bash
-   git clone https://github.com/yourusername/smart_complaint_box.git
-   cd smart_complaint_box
-
-2. **Create a virtual environment & install dependencies**
-  ```bash
-python -m venv venv
-source venv/bin/activate   # Linux/Mac
-venv\Scripts\activate      # Windows
-
-pip install -r requirements.txt
-  ```
-
-3. **Configure environment variables**
-  ```bash
-cp .env.example .env
-# Fill in required values (e.g., email credentials, DB settings)
-   ```
-4. **Run the application**
-   ```bash
-   python main.py
-   ```
----
-
-## 🔮 Future Improvements
-- 🔑 User authentication with role-based access (User/Admin)
-- 🎨 Centralized CSS/JS styling for frontend
-- 📜 Enhanced logging & monitoring
-- 🐳 Deployment support (Docker)
-- 📲 Push notifications (SMS/WhatsApp/Email updates)
-- 🌍 Automatic geolocation tagging (fetch location with user permission for map-based tracking)
-- 🕵️ Anonymous complaints (allow users to submit issues without revealing identity)
+## 🧰 Future Enhancements
+- 🔐 User authentication (Citizen login)
+- 📊 Analytics dashboard for departments
+- 🤖 NLP model upgrade for multi-language complaint analysis
+- ☁️ Cloud-based file and image attachment support
+- 🕵️ Anonymous complaint submission
 
 ---
