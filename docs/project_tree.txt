@@ -1,48 +1,41 @@
-smart-complaint-box/
+arzi/
+├── main.py                         # Entry point of the Flask app
 │
-├── backend/                         # Backend API + logic
-│   ├── main.py                      # FastAPI app (submit + track endpoints)
-│   ├── classifier.py                # Loads trained models & runs predictions
-│   ├── router.py                    # Routing engine (department mapping + escalation)
-│   ├── storage.py                   # Complaint storage (in-memory now, DB later)
-│   └── utils.py                     # Helper functions (timestamps, IDs, logging)
+├── backend/                        # Backend logic and blueprints
+│   ├── __init__.py
+│   ├── blueprints/
+│   │   ├── user.py                 # User-side routes (submit, track)
+│   │   └── admin.py                # Admin routes (verify, update, delete)
+│   ├── classifier.py               # Complaint text classification
+│   ├── router.py                   # Department routing logic
+│   ├── storage.py                  # Complaint CRUD and DB operations
+│   ├── email_sender.py             # Email and escalation notifications
+│   ├── email_templates.py          # Email format templates
+│   └── relay.py                    # Email relay and subject tagging
 │
-├── ml_models/                       # ML training + models
-│   ├── dataset/
-│   │   └── complaints.csv           # Master dataset (complaint_text, category, subcategory, urgency)
-│   │
-│   ├── train_all.py                 # Trains category, urgency, subcategory models
-│   │
-│   └── trained_data/               # Final trained ML models
+├── database/
+│   ├── models.py                   # SQLAlchemy ORM models
+│   └── __init__.py
+│
+├── ml_models/
+│   ├── trainall.py                 # Model training script
+│   └── trained_data/               # Serialized trained ML models (.pkl)
 │       ├── category_model.pkl
 │       ├── urgency_model.pkl
 │       └── subcategory_models/
-│           ├── subcategory_Water.pkl
-│           ├── subcategory_Electrical.pkl
-│           ├── subcategory_Sanitation.pkl
-│           └── subcategory_Road.pkl
 │
-├── config/                          # Config files
-│   ├── routing.json                 # Maps category+subcategory → officers at L1, L2, L3
-│   └── escalation.json              # Defines time thresholds for escalation by urgency
+├── static/                         # Frontend files
+│   ├── index.html                  # Complaint submission page
+│   ├── track.html                  # Track status page
+│   ├── admin.html                  # Admin dashboard
+│   ├── style.css                   # Unified modern styling
+│   ├── index.js                    # Client-side logic
+│   ├── track.js
+│   ├── admin.js
+│   └── logo/
+│       └── Arzi_logo.png           # Arzi brand logo
 │
-├── frontend/                        # Simple UI
-│   ├── index.html                   # Complaint submission form
-│   ├── track.html                   # Track complaint form
-│   └── js/                          # Optional JS files if separated
-│
-├── database/                        # DB (future integration)
-│   ├── schema.sql                   # SQL schema for complaints, departments, logs
-│   └── models.py                    # ORM classes (SQLAlchemy/Django ORM)
-│
-├── tests/                           # Unit tests
-│   ├── test_classifier.py           # Tests ML predictions
-│   ├── test_router.py               # Tests routing & escalation
-│   └── test_api.py                  # Tests API endpoints
-│
-├── docs/                            # Documentation & diagrams
-│   ├── architecture.png             # System workflow diagram
-│   └── readme_notes.md              # Notes for teammates
-│
-├── requirements.txt                 # Python dependencies
-└── README.md                        # Project overview & setup guide
+├── paths.py                        # Helper for path configuration
+├── requirements.txt                # Python dependencies
+├── .gitignore                      # Ignored build and cache files
+└── README.md                       # Documentation
